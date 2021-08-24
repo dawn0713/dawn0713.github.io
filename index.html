@@ -176,7 +176,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/08/24/STSGCN/" class="post-title-link" itemprop="url">STSGCN</a>
+            <a href="/2021/08/24/STSGCN/" class="post-title-link" itemprop="url">【论文阅读笔记】STSGCN</a>
         </h2>
 
         <div class="post-meta">
@@ -187,7 +187,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-08-24 21:18:24 / 修改时间：21:34:44" itemprop="dateCreated datePublished" datetime="2021-08-24T21:18:24+08:00">2021-08-24</time>
+              <time title="创建时间：2021-08-24 21:18:24 / 修改时间：21:42:25" itemprop="dateCreated datePublished" datetime="2021-08-24T21:18:24+08:00">2021-08-24</time>
             </span>
 
           
@@ -201,7 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="【论文阅读笔记】STGCN"><a href="#【论文阅读笔记】STGCN" class="headerlink" title="【论文阅读笔记】STGCN"></a>【论文阅读笔记】STGCN</h3><p>文章信息：</p>
+          <p>文章信息：</p>
 <p>《Spatial-Temporal Synchronous Graph Convolutional Networks: A New Framework for Spatial-Temporal Network Data Forecasting》</p>
 <p>论文 <a target="_blank" rel="noopener" href="https://github.com/Davidham3/STSGCN/tree/master/paper">pdf</a></p>
 <p>代码 <a target="_blank" rel="noopener" href="https://github.com/Davidham3/STSGCN">link</a></p>
@@ -310,7 +310,7 @@
 <li><p>设计初衷：</p>
 <p>局部时空图中的邻接矩阵 $A’$ 是一个0-1矩阵，即使在某个时间点，两个节点之间没有联系，但是也会因为0-1矩阵中相连，而聚合特征</p>
 </li>
-<li><p>方法：<br>$$<br>A’<em>{adjusted}=W</em>{mask}\bigotimes{A’\in\mathbb{R}^{3N\times{3N}}}<br>$$</p>
+<li><p>方法：<br>$$<br>A’_{adjusted}=W_{mask}\bigotimes{A’\in\mathbb{R}^{3N\times{3N}}}<br>$$</p>
 <ul>
 <li>$W_{mask}\in\mathbb{R}^{3N\times{3N}}$：learnable mask matrix，动态调整节点间的聚合权重</li>
 </ul>
