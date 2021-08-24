@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="注：持续更新 1. ST-ResNet问题：ST-ResNet网络中，如何获取时间特征和空间特征？ Deep Spatio-Temporal Residual Networks for Citywide Crowd Flows Prediction   在时间维度上 将时间划分为trend、period和closeness，并根据此划分输入序列 closeness: $[X_{t-l_c},X_{">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文中一些疑惑点总结">
+<meta property="og:url" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Dawn&#39;s Blog">
+<meta property="og:description" content="注：持续更新 1. ST-ResNet问题：ST-ResNet网络中，如何获取时间特征和空间特征？ Deep Spatio-Temporal Residual Networks for Citywide Crowd Flows Prediction   在时间维度上 将时间划分为trend、period和closeness，并根据此划分输入序列 closeness: $[X_{t-l_c},X_{">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-173613@2x.png">
+<meta property="og:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-175740@2x.png">
+<meta property="og:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/image-20210217181020487.png">
+<meta property="og:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-201059@2x.png">
+<meta property="og:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210218-003110@2x.png">
+<meta property="article:published_time" content="2021-02-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-12T07:23:39.738Z">
+<meta property="article:author" content="Dawn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-173613@2x.png">
+
+<link rel="canonical" href="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文中一些疑惑点总结 | Dawn's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dawn's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Dawn">
+      <meta itemprop="description" content="学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dawn's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文中一些疑惑点总结
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-02-17T00:00:00+08:00">2021-02-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-12 15:23:39" itemprop="dateModified" datetime="2021-03-12T15:23:39+08:00">2021-03-12</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>注：持续更新</p>
+<h3 id="1-ST-ResNet"><a href="#1-ST-ResNet" class="headerlink" title="1. ST-ResNet"></a>1. ST-ResNet</h3><p>问题：ST-ResNet网络中，如何获取时间特征和空间特征？</p>
+<p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/10735">Deep Spatio-Temporal Residual Networks for Citywide Crowd Flows Prediction</a></p>
+<img src="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-173613@2x.png" style="zoom:67%;">
+
+<h4 id="在时间维度上"><a href="#在时间维度上" class="headerlink" title="在时间维度上"></a>在时间维度上</h4><ol>
+<li><p>将时间划分为trend、period和closeness，并根据此划分输入序列</p>
+<p><strong>closeness</strong>: $[X_{t-l_c},X_{t-(l_c-1)},…,X_{t-1}]$</p>
+<p><strong>period</strong>: $[X_{t-l_p\cdot{p}},X_{t-(l_p-1)\cdot{p}},…,X_{t-p}]$</p>
+<p><strong>trend</strong>: $[X_{t-l_q\cdot{q}},X_{t-(l_q-1)\cdot{q}},…,X_{t-q}]$</p>
+<p>其中 $p$ 代表一天，$q$ 代表一周，$l_p$ 代表此输入序列中考虑的period数量，$l_q$ 代表此输入序列中考虑的trend数量，在代码中一般设计为超参数。</p>
+</li>
+<li><p>使用Conv1进行时间维度特征提取</p>
+<img src="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-175740@2x.png" style="zoom:67%;">
+
+<p>以recent为例：<br>$$<br>X_c^{(1)}=f(W_c^{(1)}*X_c^{(0)}+b_c^{(1)})<br>$$</p>
+</li>
+</ol>
+<h4 id="在空间维度上"><a href="#在空间维度上" class="headerlink" title="在空间维度上"></a>在空间维度上</h4><p>使用ResUnit 1到ResUnit L，通过叠加更深的网络层数来提取任意区域间的依赖关系，Residual Unit的结构如下：</p>
+<img src="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/image-20210217181020487.png" style="zoom:67%;">
+$$
+X_c^{(l+1)}=X_c^{(l)}+\mathcal{F}(X_c^{(l)};\theta_c^{(l)}),l=1,...,L
+$$
+其中 $\mathcal{F}$ 是residual function，此处为“ReLU + Convolution”结合，并且在ReLU之前加入<font color="red">Batch Normalization</font>
+
+
+
+<h3 id="2-ASTGCN"><a href="#2-ASTGCN" class="headerlink" title="2. ASTGCN"></a>2. ASTGCN</h3><p>问题：论文中的Attention机制如何实现的？</p>
+<p><a target="_blank" rel="noopener" href="https://ojs.aaai.org/index.php/AAAI/article/view/3881">Attention Based Spatial-Temporal Graph Convolutional Networks for Traffic Flow Forecasting</a></p>
+<img src="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210217-201059@2x.png" alt="QQ20210217-201059@2x" style="zoom:67%;">
+
+<p>论文中Spatial Attention和Temporal Attention的结构相同，以Temporal Attention为例进行分析</p>
+<h4 id="Temporal-Attention"><a href="#Temporal-Attention" class="headerlink" title="Temporal Attention"></a>Temporal Attention</h4><p>$$<br>\mathbf{E}=\mathbf{V}_e\cdot\sigma(((\mathcal{X}_h^{(r-1)})^{T}\mathbf{U}_1)\mathbf{U}_2(\mathbf{U}_3\mathcal{X}_h^{(r-1)})+\mathbf{b}_e)<br>$$</p>
+<p>$$<br>\mathbf{E}_{i,j}’=\frac{exp(\mathbf{E}_{i,j})}{\sum_{j=1}^{T_{r-1}}exp(\mathbf{E}_{i,j})}<br>$$</p>
+<ol>
+<li><p>Attention机制里的Query、Key和Value</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Enjoy_endless/article/details/88679989">attention机制及self-attention(transformer)</a></p>
+<img src="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/QQ20210218-003110@2x.png" alt="QQ20210218-003110@2x" style="zoom:40%;">
+
+<p><strong>本质：</strong>Source是输入序列，Target是目标序列，将Source中的构成元素想象成是由一系列的&lt;Key,Value&gt;数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。</p>
+<p><strong>三步：</strong>（1）计算Query和Key的相似性（2）归一化处理，通常使用softmax（3）根据权重，加权求和Value</p>
+</li>
+<li><p>Self-attention</p>
+<p>在Self-attention机制中，Source和Target是相同的。<br>$$<br>Attention(Q,K,V)=softmax(\frac{Q^TK}{\sqrt{d_k}})V<br>$$<br>其中$Q=X\times{W^Q}$、$K=X\times{W^K}$、$V=X\times{W^V}$均是输入$X$的线性变换</p>
+</li>
+<li><p>ASTGCN中的Attention</p>
+<p>$(\mathcal{X}_h^{(r-1)})^{T}\mathbf{U}_1)$ 为 $Q^T$ 、$(\mathbf{U}_3\mathcal{X}_h^{(r-1)})$ 为 $K$，都是输入序列的线性变换</p>
+</li>
+<li><p>Selective Attention</p>
+<p><a target="_blank" rel="noopener" href="http://ir.hit.edu.cn/~jguo/papers/ijcai2017-dmnre.pdf">Effective Deep Memory Networks for Distant Supervised Relation Extraction</a></p>
+<p>上述论文中提到的Relation Attention机制是<br>$$<br>\mathcal{h}_i=R_iBR_j<br>$$</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/11/GNN-Review/" rel="next" title="GNN Review">
+      GNN Review <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-ST-ResNet"><span class="nav-number">1.</span> <span class="nav-text">1. ST-ResNet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E6%97%B6%E9%97%B4%E7%BB%B4%E5%BA%A6%E4%B8%8A"><span class="nav-number">1.1.</span> <span class="nav-text">在时间维度上</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E4%B8%8A"><span class="nav-number">1.2.</span> <span class="nav-text">在空间维度上</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ASTGCN"><span class="nav-number">2.</span> <span class="nav-text">2. ASTGCN</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Temporal-Attention"><span class="nav-number">2.1.</span> <span class="nav-text">Temporal Attention</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Dawn"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Dawn</p>
+  <div class="site-description" itemprop="description">学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dawn</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

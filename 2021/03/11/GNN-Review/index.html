@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Definition Graph neural networks (GNNs) are connectionist models that capture the dependence of graphs via message passing between the nodes of graphs.  Graphs are a kind of data structure which model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNN Review">
+<meta property="og:url" content="http://example.com/2021/03/11/GNN-Review/index.html">
+<meta property="og:site_name" content="Dawn&#39;s Blog">
+<meta property="og:description" content="Definition Graph neural networks (GNNs) are connectionist models that capture the dependence of graphs via message passing between the nodes of graphs.  Graphs are a kind of data structure which model">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/03/11/GNN-Review/Graph%20Types.png">
+<meta property="article:published_time" content="2021-03-11T08:56:49.000Z">
+<meta property="article:modified_time" content="2021-03-22T07:49:08.672Z">
+<meta property="article:author" content="Dawn">
+<meta property="article:tag" content="GNN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/11/GNN-Review/Graph%20Types.png">
+
+<link rel="canonical" href="http://example.com/2021/03/11/GNN-Review/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>GNN Review | Dawn's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dawn's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/11/GNN-Review/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Dawn">
+      <meta itemprop="description" content="学习记录">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dawn's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNN Review
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-11 16:56:49" itemprop="dateCreated datePublished" datetime="2021-03-11T16:56:49+08:00">2021-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-22 15:49:08" itemprop="dateModified" datetime="2021-03-22T15:49:08+08:00">2021-03-22</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Definition"><a href="#Definition" class="headerlink" title="Definition"></a>Definition</h3><ol>
+<li>Graph neural networks (GNNs) are connectionist models that capture the dependence of graphs via message passing between the nodes of graphs. </li>
+<li>Graphs are a kind of data structure which models a set of objects (nodes) and their relationships (edges). </li>
+</ol>
+<h3 id="Original-Graph-Neural-Network"><a href="#Original-Graph-Neural-Network" class="headerlink" title="Original Graph Neural Network"></a>Original Graph Neural Network</h3><p><strong>前提</strong>：监督学习，无向边</p>
+<ol>
+<li><p>Notions</p>
+<ul>
+<li>$\mathbf{h}_v\in{\mathbb{R}^s}$：节点 $v$ 的 $s$ 维隐藏状态</li>
+<li>$\mathbf{o}_v$：节点 $v$ 的节点标签</li>
+<li>$f$：local transition function，更新节点的隐藏状态</li>
+<li>$g$：local ouput function，得到输出</li>
+</ul>
+</li>
+<li><p>Functions<br>$$<br>\mathbf{h}_v=f(\mathrm{\mathbf{x}}_v,\mathrm{\mathbf{x}}_{co[v]},\mathrm{\mathbf{h}}_{ne[v]},\mathrm{\mathbf{x}}_{ne[v]})<br>$$</p>
+<p>$$<br>\mathbf{o}_v=g(\mathrm{\mathbf{h}}_v,\mathrm{\mathbf{x}}_v)<br>$$</p>
+<ul>
+<li>$\mathrm{\mathbf{x}}_v$：节点 $v$ 的特征</li>
+<li>$\mathrm{\mathbf{x}}_{co[v]}$：节点的边的特征</li>
+<li>$\mathrm{\mathbf{h}}_{ne[v]}$：节点 $v$ 的之前的隐藏状态</li>
+<li>$\mathrm{\mathbf{x}}_{ne[v]}$：节点 $v$ 邻居节点的特征</li>
+</ul>
+</li>
+</ol>
+<p>$$<br>\mathrm{\mathbf{H}}^{t+1}=F(\mathrm{\mathbf{H}}^t,\mathrm{\mathbf{X}})<br>$$</p>
+<p>​            最终会得到一个fix point固定值$\mathrm{\mathbf{H}}$</p>
+<p>​            <font color="red">其中$f$ 和 $g$ 可以解释为两个前向传播的神经网络</font></p>
+<ol start="3">
+<li><p>Loss<br>$$<br>loss=\sum_{i=1}^{p}(\mathrm{\mathbf{t}}_i-\mathrm{\mathbf{o}}_i)<br>$$</p>
+<ul>
+<li>$p$：有监督的节点数</li>
+<li>$\mathrm{\mathbf{t}}_i$：目标值</li>
+</ul>
+<p>学习算法基于gradient- descent，由以下步骤：</p>
+<ul>
+<li>从公式(1)中循环更新第 $t$ 时间节点 $v$ 的隐藏状态 $ \mathrm{\mathbf{h}}_v^t$，直到得到 $\mathrm{\mathbf{H}}$ </li>
+<li>通过loss得到梯度矩阵 $\mathrm{\mathbf{W}}$</li>
+<li>更新 $\mathrm{\mathbf{W}}$ 的权重</li>
+</ul>
+</li>
+<li><p>Limitations</p>
+<ul>
+<li>更新隐藏节点状态的方法效率低下</li>
+<li>在迭代中，每层使用相同的参数，大多数神经网络使用分层特征提取的方法</li>
+<li>无法提取边上的信息</li>
+<li>关注节点的信息而不是图上的信息，区分节点的信息量不足</li>
+</ul>
+</li>
+</ol>
+<h3 id="Variants-of-Graph-Neural-Networks"><a href="#Variants-of-Graph-Neural-Networks" class="headerlink" title="Variants of Graph Neural Networks"></a>Variants of Graph Neural Networks</h3><h4 id="1-Graph-Types"><a href="#1-Graph-Types" class="headerlink" title="1. Graph Types"></a>1. Graph Types</h4><img src="/2021/03/11/GNN-Review/Graph Types.png" alt="Graph Types" style="zoom:100%;">
+
+
+
+<h4 id="2-Propagation-Types"><a href="#2-Propagation-Types" class="headerlink" title="2. Propagation Types"></a>2. Propagation Types</h4><p>The variants utilize different aggregators to <font color="red">gather information from each node’s neighbors</font> and specific updaters to <font color="red">update nodes’ hidden states</font>.</p>
+<p><strong>key words:</strong> aggregators  &amp;  updaters</p>
+<h5 id="2-1-Convolution"><a href="#2-1-Convolution" class="headerlink" title="2.1 Convolution"></a>2.1 Convolution</h5><ol>
+<li><p>spectral approaches </p>
+</li>
+<li><p>spatial approaches</p>
+</li>
+</ol>
+<h5 id="2-2-Gate"><a href="#2-2-Gate" class="headerlink" title="2.2 Gate"></a>2.2 Gate</h5><h5 id="2-3-Attention"><a href="#2-3-Attention" class="headerlink" title="2.3 Attention"></a>2.3 Attention</h5><h4 id="3-Training-Methods"><a href="#3-Training-Methods" class="headerlink" title="3. Training Methods"></a>3. Training Methods</h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GNN/" rel="tag"># GNN</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/17/%E8%AE%BA%E6%96%87%E4%B8%AD%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E7%82%B9%E6%80%BB%E7%BB%93/" rel="prev" title="论文中一些疑惑点总结">
+      <i class="fa fa-chevron-left"></i> 论文中一些疑惑点总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/22/Spectral-Network/" rel="next" title="Spectral Network">
+      Spectral Network <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Definition"><span class="nav-number">1.</span> <span class="nav-text">Definition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Original-Graph-Neural-Network"><span class="nav-number">2.</span> <span class="nav-text">Original Graph Neural Network</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variants-of-Graph-Neural-Networks"><span class="nav-number">3.</span> <span class="nav-text">Variants of Graph Neural Networks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Graph-Types"><span class="nav-number">3.1.</span> <span class="nav-text">1. Graph Types</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Propagation-Types"><span class="nav-number">3.2.</span> <span class="nav-text">2. Propagation Types</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-Convolution"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.1 Convolution</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-Gate"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2 Gate</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-Attention"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.3 Attention</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Training-Methods"><span class="nav-number">3.3.</span> <span class="nav-text">3. Training Methods</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Dawn"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Dawn</p>
+  <div class="site-description" itemprop="description">学习记录</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Dawn</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
