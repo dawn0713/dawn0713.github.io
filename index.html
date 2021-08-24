@@ -187,7 +187,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-08-24 21:18:24 / 修改时间：21:42:25" itemprop="dateCreated datePublished" datetime="2021-08-24T21:18:24+08:00">2021-08-24</time>
+              <time title="创建时间：2021-08-24 21:18:24 / 修改时间：21:48:33" itemprop="dateCreated datePublished" datetime="2021-08-24T21:18:24+08:00">2021-08-24</time>
             </span>
 
           
@@ -326,7 +326,7 @@
 </ol>
 <p>$$<br>\widehat{y}^{(i)}=RELU(X^TW_1^{(i)}+b_1^{(i)})\cdot{W}_2^{(i)}+b_2^{(i)}<br>$$</p>
 <p>$$<br>\widehat{Y}=[\widehat{y}^{(1)},\widehat{y}^{(2)},…,\widehat{y}^{(T)}]\in\mathbb{R}^{N\times{T’}}<br>$$</p>
-<h4 id="Loss-function"><a href="#Loss-function" class="headerlink" title="Loss function"></a>Loss function</h4><p>$$<br>L(Y,\widehat{Y})=\left{<br>\begin{aligned}<br>\frac{1}{2}(Y-\widehat{Y})^2 &amp;  &amp;|Y-\widehat{Y}|\leq\delta \<br>\delta|Y-\widehat{Y}|-\frac{1}{2}\delta^2&amp;  &amp;otherwise<br>\end{aligned}<br>\right.<br>$$</p>
+<h4 id="Loss-function"><a href="#Loss-function" class="headerlink" title="Loss function"></a>Loss function</h4><p>$$<br>L(Y,\widehat{Y})=\begin{cases}<br>        \frac{1}{2}(Y-\widehat{Y})^2   &amp;  |Y-\widehat{Y}|\leq\delta\<br>        \delta|Y-\widehat{Y}|-\frac{1}{2}\delta^2   &amp;  otherwise<br>      \end{cases}<br>$$</p>
 <h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><h4 id="Datasets"><a href="#Datasets" class="headerlink" title="Datasets"></a>Datasets</h4><img src="/2021/08/24/STSGCN/image-20210824190620908.png" alt="image-20210824190620908" style="zoom:60%;">
 
 <h4 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h4><img src="/2021/08/24/STSGCN/image-20210824190541292.png" alt="image-20210824190654897" style="zoom:67%;">
@@ -383,7 +383,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-22 15:49:08" itemprop="dateModified" datetime="2021-03-22T15:49:08+08:00">2021-03-22</time>
+                <time title="修改时间：2021-08-24 21:44:48" itemprop="dateModified" datetime="2021-08-24T21:44:48+08:00">2021-08-24</time>
               </span>
 
           
